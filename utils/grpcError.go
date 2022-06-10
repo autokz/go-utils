@@ -4,6 +4,7 @@ import (
 	"errors"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"regexp"
 	"runtime"
 	"strconv"
 	"strings"
@@ -57,7 +58,12 @@ func ParseGrpcError(err error) *WrapperError {
 	splitErr := strings.Split(err.Error(), ErrMsgSeparator)
 
 	// Code
+	code = 9999 // Fallback
 	codeString := FindInStringByRange(splitErr[0], " code = ", " desc =")
+
+	var reQuantity = regexp.MustCompile(`[^\d.]`)
+	codeString = reQuantity.ReplaceAllString(codeString, "")
+
 	convertedCode, _ := strconv.Atoi(codeString)
 	code = uint32(convertedCode)
 
