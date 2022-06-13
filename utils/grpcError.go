@@ -25,6 +25,11 @@ func (w *WrapperError) Error() string {
 	return w.Message + ErrMsgSeparator + stackTrace
 }
 
+func GrpcErrorWrapper(err error) error {
+	parsedErr := ParseGrpcError(err)
+	return GrpcError(parsedErr.Code, parsedErr.Message)
+}
+
 func GrpcError(code uint32, message string) error {
 	// Parse nested wrappers...
 	parsedErr := ParseGrpcError(errors.New(message))
