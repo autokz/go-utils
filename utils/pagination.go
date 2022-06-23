@@ -2,6 +2,14 @@ package utils
 
 import "math"
 
+const defaultPerPage = 10
+
+type Paginator interface {
+	GetPage() uint32
+	GetLimit() int32
+	GetOffset() uint32
+}
+
 type Pagination struct {
 	totalCount uint32
 	page       uint32
@@ -53,4 +61,21 @@ func (p *Pagination) GetPagesCount() uint32 {
 
 func (p *Pagination) getOffset() uint32 {
 	return (p.page - 1) * p.perPage
+}
+
+func CreatePagination(req Paginator, countAll uint32) *Pagination {
+	p := req.GetPage()
+	limit := req.GetLimit()
+	offset := req.GetOffset()
+
+	var _perPage int32
+	if limit == 0 {
+		_perPage = defaultPerPage
+	}
+	if limit > 0 {
+		_perPage = limit
+	}
+	pager := NewPagination(p, _perPage, offset, countAll)
+
+	return pager
 }
