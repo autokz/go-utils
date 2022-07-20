@@ -35,6 +35,10 @@ func FindInStringByRange(str string, from string, to string) string {
 }
 
 func UcrFirst(str string) string {
+	if str == "" {
+		return str
+	}
+
 	firstChar := string([]rune(str)[0])
 	str = str[len(firstChar):]
 
